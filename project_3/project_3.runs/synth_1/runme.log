@@ -1,0 +1,87 @@
+
+*** Running vivado
+    with args -log top.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source top.tcl
+
+
+ECHO est  desactivado.
+ECHO est  desactivado.
+
+****** Vivado v2023.2 (64-bit)
+  **** SW Build 4029153 on Fri Oct 13 20:14:34 MDT 2023
+  **** IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+  **** SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source top.tcl -notrace
+create_project: Time (s): cpu = 00:00:07 ; elapsed = 00:00:11 . Memory (MB): peak = 451.812 ; gain = 184.660
+Command: synth_design -top top -part xc7a100tcsg324-1
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7a100t'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a100t'
+INFO: [Device 21-403] Loading part xc7a100tcsg324-1
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 25556
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:07 ; elapsed = 00:00:08 . Memory (MB): peak = 1303.070 ; gain = 437.699
+---------------------------------------------------------------------------------
+INFO: [Synth 8-638] synthesizing module 'top' [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/top.vhd:55]
+INFO: [Synth 8-3491] module 'Control_Entities' declared at 'C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/Control_Entities.vhd:34' bound to instance 'control_entities_inst' of component 'Control_Entities' [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/top.vhd:120]
+INFO: [Synth 8-638] synthesizing module 'Control_Entities' [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/Control_Entities.vhd:58]
+INFO: [Synth 8-3491] module 'Sincro' declared at 'C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/sincro.vhd:37' bound to instance 'sync_start_inst' of component 'Sincro' [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/Control_Entities.vhd:78]
+INFO: [Synth 8-638] synthesizing module 'Sincro' [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/sincro.vhd:42]
+INFO: [Synth 8-256] done synthesizing module 'Sincro' (0#1) [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/sincro.vhd:42]
+INFO: [Synth 8-3491] module 'Sincro' declared at 'C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/sincro.vhd:37' bound to instance 'sync_stop_inst' of component 'Sincro' [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/Control_Entities.vhd:85]
+INFO: [Synth 8-3491] module 'Sincro' declared at 'C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/sincro.vhd:37' bound to instance 'sync_reset_inst' of component 'Sincro' [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/Control_Entities.vhd:92]
+INFO: [Synth 8-3491] module 'Sincro' declared at 'C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/sincro.vhd:37' bound to instance 'sync_start_tiempo' of component 'Sincro' [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/Control_Entities.vhd:98]
+INFO: [Synth 8-3491] module 'Sincro' declared at 'C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/sincro.vhd:37' bound to instance 'sync_start_tiempo1' of component 'Sincro' [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/Control_Entities.vhd:104]
+INFO: [Synth 8-3491] module 'Sincro' declared at 'C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/sincro.vhd:37' bound to instance 'sync_start_tiempo2' of component 'Sincro' [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/Control_Entities.vhd:110]
+INFO: [Synth 8-3491] module 'Sincro' declared at 'C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/sincro.vhd:37' bound to instance 'sync_start_tiempo3' of component 'Sincro' [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/Control_Entities.vhd:116]
+INFO: [Synth 8-3491] module 'Sincro' declared at 'C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/sincro.vhd:37' bound to instance 'sync_start_updown' of component 'Sincro' [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/Control_Entities.vhd:122]
+INFO: [Synth 8-3491] module 'Sincro' declared at 'C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/sincro.vhd:37' bound to instance 'sync_start_almu' of component 'Sincro' [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/Control_Entities.vhd:128]
+INFO: [Synth 8-3491] module 'EDGEDCTR' declared at 'C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/EDGEDCTR.vhd:34' bound to instance 'edge_start_inst' of component 'EDGEDCTR' [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/Control_Entities.vhd:135]
+INFO: [Synth 8-638] synthesizing module 'EDGEDCTR' [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/EDGEDCTR.vhd:39]
+INFO: [Synth 8-256] done synthesizing module 'EDGEDCTR' (0#1) [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/EDGEDCTR.vhd:39]
+INFO: [Synth 8-3491] module 'EDGEDCTR' declared at 'C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/EDGEDCTR.vhd:34' bound to instance 'edge_stop_inst' of component 'EDGEDCTR' [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/Control_Entities.vhd:142]
+INFO: [Synth 8-3491] module 'EDGEDCTR' declared at 'C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/EDGEDCTR.vhd:34' bound to instance 'edge_reset_inst' of component 'EDGEDCTR' [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/Control_Entities.vhd:149]
+INFO: [Synth 8-3491] module 'EDGEDCTR' declared at 'C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/EDGEDCTR.vhd:34' bound to instance 'edge_almu_inst' of component 'EDGEDCTR' [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/Control_Entities.vhd:155]
+INFO: [Synth 8-256] done synthesizing module 'Control_Entities' (0#1) [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/Control_Entities.vhd:58]
+WARNING: [Synth 8-5640] Port 'led_out' is missing in component declaration [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/top.vhd:81]
+INFO: [Synth 8-3491] module 'maquina_estados' declared at 'C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/counter.vhd:26' bound to instance 'inst_count' of component 'maquina_estados' [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/top.vhd:143]
+INFO: [Synth 8-638] synthesizing module 'maquina_estados' [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/counter.vhd:48]
+WARNING: [Synth 8-614] signal 'state' is read in the process but is not in the sensitivity list [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/counter.vhd:99]
+WARNING: [Synth 8-614] signal 'stop_internal' is read in the process but is not in the sensitivity list [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/counter.vhd:99]
+WARNING: [Synth 8-614] signal 'counter_stopped' is read in the process but is not in the sensitivity list [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/counter.vhd:99]
+WARNING: [Synth 8-614] signal 'count_enable' is read in the process but is not in the sensitivity list [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/counter.vhd:99]
+WARNING: [Synth 8-614] signal 'updown' is read in the process but is not in the sensitivity list [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/counter.vhd:99]
+WARNING: [Synth 8-614] signal 'countersecuni' is read in the process but is not in the sensitivity list [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/counter.vhd:99]
+WARNING: [Synth 8-614] signal 'countersecdec' is read in the process but is not in the sensitivity list [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/counter.vhd:99]
+WARNING: [Synth 8-614] signal 'counterminuni' is read in the process but is not in the sensitivity list [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/counter.vhd:99]
+WARNING: [Synth 8-614] signal 'countermindec' is read in the process but is not in the sensitivity list [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/counter.vhd:99]
+WARNING: [Synth 8-614] signal 'counterhor' is read in the process but is not in the sensitivity list [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/counter.vhd:99]
+WARNING: [Synth 8-614] signal 'count_down_internal' is read in the process but is not in the sensitivity list [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/counter.vhd:99]
+WARNING: [Synth 8-614] signal 'tiempo3' is read in the process but is not in the sensitivity list [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/counter.vhd:99]
+WARNING: [Synth 8-614] signal 'tiempo2' is read in the process but is not in the sensitivity list [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/counter.vhd:99]
+WARNING: [Synth 8-614] signal 'tiempo1' is read in the process but is not in the sensitivity list [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/counter.vhd:99]
+WARNING: [Synth 8-614] signal 'tiempo' is read in the process but is not in the sensitivity list [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/counter.vhd:99]
+WARNING: [Synth 8-614] signal 'countertiempo' is read in the process but is not in the sensitivity list [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/counter.vhd:99]
+WARNING: [Synth 8-614] signal 'countertiempo1' is read in the process but is not in the sensitivity list [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/counter.vhd:99]
+WARNING: [Synth 8-614] signal 'counter' is read in the process but is not in the sensitivity list [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/counter.vhd:99]
+INFO: [Synth 8-256] done synthesizing module 'maquina_estados' (0#1) [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/counter.vhd:48]
+INFO: [Synth 8-3491] module 'ControlSalidas' declared at 'C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/ControlSalidas.vhd:24' bound to instance 'inst_control_outputs' of component 'ControlSalidas' [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/top.vhd:163]
+INFO: [Synth 8-638] synthesizing module 'ControlSalidas' [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/ControlSalidas.vhd:37]
+WARNING: [Synth 8-5640] Port 'bcd' is missing in component declaration [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/ControlSalidas.vhd:38]
+INFO: [Synth 8-3491] module 'decodificador' declared at 'C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/decodificador.vhd:35' bound to instance 'bcd_inst_sec_units' of component 'decodificador' [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/ControlSalidas.vhd:68]
+ERROR: [Synth 8-3493] module 'decodificador' declared at 'C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/decodificador.vhd:35' does not have matching formal port for component port 'bcd7' [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/ControlSalidas.vhd:68]
+ERROR: [Synth 8-285] failed synthesizing module 'ControlSalidas' [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/ControlSalidas.vhd:37]
+ERROR: [Synth 8-285] failed synthesizing module 'top' [C:/Users/Javier/OneDrive - Universidad Politécnica de Madrid/Escritorio/project_1/project_1.srcs/sources_1/new/top.vhd:55]
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:09 ; elapsed = 00:00:10 . Memory (MB): peak = 1410.609 ; gain = 545.238
+---------------------------------------------------------------------------------
+RTL Elaboration failed
+INFO: [Common 17-83] Releasing license: Synthesis
+33 Infos, 20 Warnings, 0 Critical Warnings and 4 Errors encountered.
+synth_design failed
+ERROR: [Common 17-69] Command failed: Synthesis failed - please see the console or run log file for details
+INFO: [Common 17-206] Exiting Vivado at Tue Dec 19 16:47:53 2023...
