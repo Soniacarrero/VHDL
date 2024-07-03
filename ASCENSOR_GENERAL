@@ -1,0 +1,149 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use ieee.std_logic_arith.ALL;
+use ieee.std_logic_unsigned.ALL;
+
+-- Uncomment the following library declaration if using
+-- arithmetic functions with Signed or Unsigned values
+--use IEEE.NUMERIC_STD.ALL;
+
+-- Uncomment the following library declaration if instantiating
+-- any Xilinx leaf cells in this code.
+--library UNISIM;
+--use UNISIM.VComponents.all;
+
+entity ASCENSOR_GENERAL is
+    Port ( clk : in STD_LOGIC;
+           reset_n : in STD_LOGIC;
+           piso_estado : in STD_LOGIC_VECTOR (2 downto 0);
+           piso_deseado : in STD_LOGIC_VECTOR (2 downto 0);
+           s_presencia : in STD_LOGIC;
+           s_puerta : in STD_LOGIC_VECTOR (1 downto 0);
+           aux : out STD_LOGIC;
+           motor_puertas : out STD_LOGIC_VECTOR (1 downto 0);
+           motor_ascensor : out STD_LOGIC_VECTOR (1 downto 0));
+end ASCENSOR_GENERAL;
+
+architecture Behavioral of ASCENSOR_GENERAL is
+
+type estado_puerta is (ABRIR, CERRAR, ABIERTO, CERRADO, PARADO); --parado = puertas cerradas 
+signal ACTUAL_PUERTAS, SIGUIENTE_PUERTAS: estado_puerta;
+
+type estado_motor is (STANDBY, SUBIR, BAJAR);
+signal ACTUAL_MOTOR, SIGUIENTE_MOTOR: estado_motor;
+
+
+begin
+
+    actualiz_puertas: process(reset_n, clk, piso_estado, piso_deseado)
+        begin
+        
+        if(reset_n='0') then
+        ACTUAL_PUERTAS <= CERRADO;
+        elsif (rising_edge(clk)) then
+        ACTUAL_PUERTAS <= SIGUIENTE_PUERTAS;
+        end if;
+    end process actualiz_puertas;
+    
+    actualiz_motor: process(reset_n, clk)
+        begin
+        
+        if(reset_n='0') then
+        ACTUAL_MOTOR <= STANDBY;
+        elsif (rising_edge(clk)) then
+        ACTUAL_MOTOR <= SIGUIENTE_MOTOR;
+        end if;
+    end process actualiz_motor;
+    
+    control_puertas: process(ACTUAL_PUERTAS, s_puerta, s_presencia, piso_estado, piso_deseado)
+        begin
+            case (ACTUAL_PUERTAS) is
+            
+                when CERRADO=>
+                aux <= '0';
+                motor_puertas <= "00";
+                    if(s_puerta="01" and piso_estado=piso_deseado) then
+                        SIGUIENTE_PUERTAS <= ABRIR;
+                    else
+                        SIGUIENTE_PUERTAS <= CERRADO;
+                    end if;
+                    
+               when ABRIR=>
+                aux <= '0';
+                motor_puertas <= "10";
+                    if(s_puerta="10") then
+                        SIGUIENTE_PUERTAS <= ABIERTO;
+                    else
+                        SIGUIENTE_PUERTAS <= ABRIR;
+                    end if;
+               
+               when ABIERTO=>
+                aux <= '0';
+                motor_puertas <= "00";
+                    if(s_presencia = '0') then
+                    -- meter un wait para que se espere un poco antes de cerrar
+                        SIGUIENTE_PUERTAS <= CERRAR;
+                    else
+                        SIGUIENTE_PUERTAS <= ABIERTO;
+                    end if;
+               
+               when CERRAR=>
+                aux <= '0';
+                motor_puertas <= "01";
+                    if(s_presencia = '1' and s_puerta /= "01") then
+                        SIGUIENTE_PUERTAS <= ABRIR;
+                    elsif (s_puerta = "01") then
+                        SIGUIENTE_PUERTAS <= PARADO;
+                    else 
+                        SIGUIENTE_PUERTAS <= CERRAR;
+                    end if;
+               
+               when PARADO=>
+                aux <= '1';   --habilita el boton
+                motor_puertas <= "00";
+                    if(piso_estado /= piso_deseado) then
+                        SIGUIENTE_PUERTAS <= CERRADO;
+                    else
+                        SIGUIENTE_PUERTAS <= PARADO;
+                    end if;
+                    
+            end case;
+            
+    end process control_puertas;
+    
+    control_motor_ascensor: process(piso_estado, piso_deseado, ACTUAL_MOTOR)
+        begin
+            case (ACTUAL_MOTOR) is
+                
+                when STANDBY =>
+                motor_ascensor <= "00";
+                    if (piso_deseado > piso_estado) then
+                        SIGUIENTE_MOTOR <= SUBIR;
+                    elsif (piso_deseado < piso_estado) then
+                        SIGUIENTE_MOTOR <= BAJAR;
+                    else 
+                        SIGUIENTE_MOTOR <= STANDBY;
+                    end if;
+                
+                when SUBIR =>
+                motor_ascensor <= "10";
+                    if (piso_deseado = piso_estado) then
+                        SIGUIENTE_MOTOR <= STANDBY;
+                    else 
+                        SIGUIENTE_MOTOR <= SUBIR;
+                    end if;
+                    
+               when BAJAR =>
+                motor_ascensor <= "01";
+                    if (piso_deseado = piso_estado) then
+                        SIGUIENTE_MOTOR <= STANDBY;
+                    else 
+                        SIGUIENTE_MOTOR <= BAJAR;
+                    end if;
+                    
+            end case;
+            
+    end process control_motor_ascensor;
+    
+
+end Behavioral;
