@@ -1,0 +1,63 @@
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use ieee.std_logic_arith.ALL;
+use ieee.std_logic_unsigned.ALL;
+
+-- Uncomment the following library declaration if using
+-- arithmetic functions with Signed or Unsigned values
+--use IEEE.NUMERIC_STD.ALL;
+
+-- Uncomment the following library declaration if instantiating
+-- any Xilinx leaf cells in this code.
+--library UNISIM;
+--use UNISIM.VComponents.all;
+
+entity TRATAMIENTO_PISOS is
+    Port ( reset_n : in STD_LOGIC;
+           boton : in STD_LOGIC_VECTOR (3 downto 0);
+           clk_pisos : in STD_LOGIC;
+           aux : in STD_LOGIC;
+           motor : in STD_LOGIC_VECTOR (1 downto 0);
+           piso_deseado : out STD_LOGIC_VECTOR (2 downto 0);
+           piso_estado : out STD_LOGIC_VECTOR (2 downto 0));
+end TRATAMIENTO_PISOS;
+
+architecture Behavioral of TRATAMIENTO_PISOS is
+    signal asign: std_logic_vector (2 downto 0);
+
+begin
+deseado:process(clk_pisos,reset_n,aux)
+begin
+    if(reset_n='0') then
+    piso_deseado<="001";
+    elsif(rising_edge(clk_pisos)and motor="00" and aux='1') then
+    case (boton) is
+        when "0000"=> piso_deseado<=asign;
+        when "0001"=> piso_deseado<="001";
+        when "0010"=> piso_deseado<="010";
+        when "0100"=> piso_deseado<="011";
+        when "1000"=> piso_deseado<="100";
+        when others => piso_deseado<=asign;
+        end case;
+        end if;
+end process deseado;
+
+deseadopormotor:process(motor, clk_pisos, reset_n)
+    begin
+        if(reset_n='0') then
+        asign<="001";
+        
+        elsif (rising_edge(clk_pisos)) then
+        
+            case (motor) is
+                when "01" => asign <= asign-1;
+                when "10" => asign <= asign+1;
+                when others => asign <= asign;
+            end case;
+        end if;
+end process deseadopormotor;
+
+piso_estado <= asign;
+
+end Behavioral;
