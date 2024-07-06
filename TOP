@@ -1,0 +1,131 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use ieee.std_logic_arith.ALL;
+use ieee.std_logic_unsigned.ALL;
+
+-- Uncomment the following library declaration if using
+-- arithmetic functions with Signed or Unsigned values
+--use IEEE.NUMERIC_STD.ALL;
+
+-- Uncomment the following library declaration if instantiating
+-- any Xilinx leaf cells in this code.
+--library UNISIM;
+--use UNISIM.VComponents.all;
+
+entity TOP is
+    Port ( CLK : in STD_LOGIC;
+           RESET_n : in STD_LOGIC;
+           BOTON : in STD_LOGIC_VECTOR (3 downto 0);
+           aux : inout STD_LOGIC;
+           s_PRESENCIA : in STD_LOGIC;
+           estado_PUERTA : in STD_LOGIC_VECTOR (1 downto 0);
+           motor_PUERTA : out STD_LOGIC_VECTOR (1 downto 0);
+           motor_ASCENSOR : inout STD_LOGIC_VECTOR (1 downto 0);
+           led : out STD_LOGIC_VECTOR (6 downto 0));
+end TOP;
+
+architecture Structural of TOP is
+
+signal clk_1: std_logic;
+signal clk_2: std_logic;
+signal piso_des: std_logic_vector (2 downto 0);
+signal piso_est: std_logic_vector (2 downto 0);
+
+COMPONENT RELOJ
+    Generic (
+        fHz: integer:=50000000
+    );
+        
+    Port ( clk_out : out STD_LOGIC;
+           reset_n : in STD_LOGIC;
+           clk_in : in STD_LOGIC);
+end COMPONENT;
+
+
+COMPONENT TRATAMIENTO_PISOS
+    Port ( reset_n : in STD_LOGIC;
+           boton : in STD_LOGIC_VECTOR (3 downto 0);
+           clk_pisos : in STD_LOGIC;
+           aux : in STD_LOGIC;
+           motor : in STD_LOGIC_VECTOR (1 downto 0);
+           piso_deseado : out STD_LOGIC_VECTOR (2 downto 0);
+           piso_estado : out STD_LOGIC_VECTOR (2 downto 0));
+           
+end COMPONENT;  
+
+
+COMPONENT ASCENSOR_GENERAL
+    Port ( clk : in STD_LOGIC;
+           reset_n : in STD_LOGIC;
+           piso_estado : in STD_LOGIC_VECTOR (2 downto 0);
+           piso_deseado : in STD_LOGIC_VECTOR (2 downto 0);
+           s_presencia : in STD_LOGIC;
+           s_puerta : in STD_LOGIC_VECTOR (1 downto 0);
+           aux : out STD_LOGIC;
+           motor_puertas : out STD_LOGIC_VECTOR (1 downto 0);
+           motor_ascensor : out STD_LOGIC_VECTOR (1 downto 0));
+
+end COMPONENT;
+
+
+COMPONENT DISPLAY
+    Port ( reset_n : in STD_LOGIC;
+           clk_display : in STD_LOGIC;
+           piso_estado : in STD_LOGIC_VECTOR (2 downto 0);
+           led : out STD_LOGIC_VECTOR (6 downto 0));
+
+end COMPONENT;     
+
+
+begin
+
+    reloj_1: RELOJ
+        GENERIC MAP (fHz => 100000000)
+        PORT MAP (
+            clk_in => CLK,
+            reset_n => RESET_n,
+            clk_out => clk_1
+        );
+        
+    reloj_2: RELOJ
+        GENERIC MAP (fHz => 150000000)
+        PORT MAP (
+            clk_in => CLK,
+            reset_n => RESET_n,
+            clk_out => clk_2
+        );
+        
+    display_1:DISPLAY
+        PORT MAP (
+            clk_display => clk_2,
+            reset_n => RESET_n,
+            piso_estado => piso_est,
+            led => led
+        );
+        
+    tratamiento_pisos_1: TRATAMIENTO_PISOS
+        PORT MAP (
+            clk_pisos => clk_2,
+            reset_n => RESET_n,
+            motor => motor_ASCENSOR,
+            piso_estado => piso_est,
+            piso_deseado => piso_des,
+            aux => aux,
+            boton => BOTON
+        );
+
+    control_ascensor_general: ASCENSOR_GENERAL
+        PORT MAP (
+           clk => clk_1,
+           reset_n => RESET_n,
+           piso_estado => piso_est,
+           piso_deseado => piso_des,
+           s_presencia => s_PRESENCIA,
+           s_puerta => estado_PUERTA,
+           aux => aux,
+           motor_puertas => motor_PUERTA,
+           motor_ascensor => motor_ASCENSOR
+        );
+        
+        
+end Structural;
