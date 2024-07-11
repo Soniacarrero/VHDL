@@ -1,3 +1,24 @@
+----------------------------------------------------------------------------------
+-- Company: 
+-- Engineer: 
+-- 
+-- Create Date: 29.06.2024 11:56:22
+-- Design Name: 
+-- Module Name: RELOJ - Behavioral
+-- Project Name: 
+-- Target Devices: 
+-- Tool Versions: 
+-- Description: 
+-- 
+-- Dependencies: 
+-- 
+-- Revision:
+-- Revision 0.01 - File Created
+-- Additional Comments:
+-- 
+----------------------------------------------------------------------------------
+
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use ieee.std_logic_arith.ALL;
@@ -18,9 +39,9 @@ entity RELOJ is
         fHz: integer:=50000000
     );
         
-    Port ( clk_out : out STD_LOGIC;
-           reset_n : in STD_LOGIC;
-           clk_in : in STD_LOGIC);
+    Port ( clk_out : out STD_LOGIC; --señal de reloj que devuelve
+           reset_n : in STD_LOGIC; --reset negado
+           clk_in : in STD_LOGIC); --señal de reloj que recibe y modifica
 end RELOJ;
 
 architecture Behavioral of RELOJ is
