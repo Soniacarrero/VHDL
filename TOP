@@ -1,3 +1,24 @@
+----------------------------------------------------------------------------------
+-- Company: 
+-- Engineer: 
+-- 
+-- Create Date: 28.06.2024 19:15:34
+-- Design Name: 
+-- Module Name: TOP - Structural
+-- Project Name: 
+-- Target Devices: 
+-- Tool Versions: 
+-- Description: 
+-- 
+-- Dependencies: 
+-- 
+-- Revision:
+-- Revision 0.01 - File Created
+-- Additional Comments:
+-- 
+----------------------------------------------------------------------------------
+
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use ieee.std_logic_arith.ALL;
@@ -13,24 +34,26 @@ use ieee.std_logic_unsigned.ALL;
 --use UNISIM.VComponents.all;
 
 entity TOP is
-    Port ( CLK : in STD_LOGIC;
-           RESET_n : in STD_LOGIC;
-           BOTON : in STD_LOGIC_VECTOR (3 downto 0);
-           aux : inout STD_LOGIC;
-           s_PRESENCIA : in STD_LOGIC;
-           estado_PUERTA : in STD_LOGIC_VECTOR (1 downto 0);
-           motor_PUERTA : out STD_LOGIC_VECTOR (1 downto 0);
-           motor_ASCENSOR : inout STD_LOGIC_VECTOR (1 downto 0);
-           led : out STD_LOGIC_VECTOR (6 downto 0));
+    Port ( CLK : in STD_LOGIC; -- señal de reloj de la placa
+           RESET_n : in STD_LOGIC; -- botón de reset negado
+           BOTON : in STD_LOGIC_VECTOR (3 downto 0); -- botonera para elección de pisos
+           aux : inout STD_LOGIC; -- variable de habilitación de la botonera
+           s_PRESENCIA : in STD_LOGIC; -- sensor de presencia en la entrada al ascensor
+           estado_PUERTA : in STD_LOGIC_VECTOR (1 downto 0); -- sesnor que detecta si está abierta o cerrada la puerta
+           motor_PUERTA : out STD_LOGIC_VECTOR (1 downto 0); -- motor de las puertas del ascensor
+           motor_ASCENSOR : inout STD_LOGIC_VECTOR (1 downto 0); --motor de subida/bajada del ascensor
+           led : out STD_LOGIC_VECTOR (6 downto 0)); --leds del display
 end TOP;
 
 architecture Structural of TOP is
 
+-- Signal para las variables que se emplean a modo de entrada/salida
 signal clk_1: std_logic;
 signal clk_2: std_logic;
 signal piso_des: std_logic_vector (2 downto 0);
 signal piso_est: std_logic_vector (2 downto 0);
 
+-- Creamos componenetes para cada entidad
 COMPONENT RELOJ
     Generic (
         fHz: integer:=50000000
@@ -44,10 +67,10 @@ end COMPONENT;
 
 COMPONENT TRATAMIENTO_PISOS
     Port ( reset_n : in STD_LOGIC;
-           boton : in STD_LOGIC_VECTOR (3 downto 0);
+           boton : in STD_LOGIC_VECTOR (3 downto 0); 
            clk_pisos : in STD_LOGIC;
-           aux : in STD_LOGIC;
-           motor : in STD_LOGIC_VECTOR (1 downto 0);
+           aux : in STD_LOGIC;  -- hanilitación de la botonera
+           motor : in STD_LOGIC_VECTOR (1 downto 0);   -- "10" =subir  "01" =bajar
            piso_deseado : out STD_LOGIC_VECTOR (2 downto 0);
            piso_estado : out STD_LOGIC_VECTOR (2 downto 0));
            
@@ -59,11 +82,11 @@ COMPONENT ASCENSOR_GENERAL
            reset_n : in STD_LOGIC;
            piso_estado : in STD_LOGIC_VECTOR (2 downto 0);
            piso_deseado : in STD_LOGIC_VECTOR (2 downto 0);
-           s_presencia : in STD_LOGIC;
-           s_puerta : in STD_LOGIC_VECTOR (1 downto 0);
-           aux : out STD_LOGIC;
-           motor_puertas : out STD_LOGIC_VECTOR (1 downto 0);
-           motor_ascensor : out STD_LOGIC_VECTOR (1 downto 0));
+           s_presencia : in STD_LOGIC;  -- "1" =presencia  "0" =no presencia
+           s_puerta : in STD_LOGIC_VECTOR (1 downto 0);  -- "10" =abierta  "01" =cerrada
+           aux : out STD_LOGIC;    -- hanilitación de la botonera
+           motor_puertas : out STD_LOGIC_VECTOR (1 downto 0);   -- "10" =abrir  "01" =cerrar
+           motor_ascensor : out STD_LOGIC_VECTOR (1 downto 0));  -- "10" =subir  "01" =bajar
 
 end COMPONENT;
 
@@ -72,14 +95,16 @@ COMPONENT DISPLAY
     Port ( reset_n : in STD_LOGIC;
            clk_display : in STD_LOGIC;
            piso_estado : in STD_LOGIC_VECTOR (2 downto 0);
-           led : out STD_LOGIC_VECTOR (6 downto 0));
+           led : out STD_LOGIC_VECTOR (6 downto 0)); -- Leds del display
 
 end COMPONENT;     
 
 
 begin
 
-    reloj_1: RELOJ
+-- Se asocian las variables globales o señales a las variables locales de cada entidad
+
+    reloj_1: RELOJ --CLK para la entidad del control general del ascensor
         GENERIC MAP (fHz => 100000000)
         PORT MAP (
             clk_in => CLK,
@@ -87,7 +112,7 @@ begin
             clk_out => clk_1
         );
         
-    reloj_2: RELOJ
+    reloj_2: RELOJ --CLK para el tratamiento de pisos y el display
         GENERIC MAP (fHz => 150000000)
         PORT MAP (
             clk_in => CLK,
