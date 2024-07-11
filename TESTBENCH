@@ -1,0 +1,345 @@
+COMPROBACION DE LA BOTONERA
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+
+entity TOP_tb is
+--  Port ( );
+end TOP_tb;
+
+architecture Behavioral of TOP_tb is
+
+    -- Declaración del componente para la Unidad Bajo Prueba (UUT)
+    component TOP
+    Port ( CLK : in STD_LOGIC;
+           RESET_n : in STD_LOGIC;
+           BOTON : in STD_LOGIC_VECTOR (3 downto 0);
+           aux : inout STD_LOGIC;
+           s_PRESENCIA : in STD_LOGIC;
+           estado_PUERTA : in STD_LOGIC_VECTOR (1 downto 0);
+           motor_PUERTA : out STD_LOGIC_VECTOR (1 downto 0);
+           motor_ASCENSOR : inout STD_LOGIC_VECTOR (1 downto 0);
+           led : out STD_LOGIC_VECTOR (6 downto 0));
+    end component;
+
+    -- Señales del testbench
+    signal CLK : STD_LOGIC := '0';
+    signal RESET_n : STD_LOGIC := '0';
+    signal BOTON : STD_LOGIC_VECTOR (3 downto 0) := (others => '0');
+    signal aux : STD_LOGIC := '0';
+    signal s_PRESENCIA : STD_LOGIC := '0';
+    signal estado_PUERTA : STD_LOGIC_VECTOR (1 downto 0) := (others => '0');
+    signal motor_PUERTA : STD_LOGIC_VECTOR (1 downto 0);
+    signal motor_ASCENSOR : STD_LOGIC_VECTOR (1 downto 0);
+    signal led : STD_LOGIC_VECTOR (6 downto 0);
+
+    -- Generación del reloj
+    constant CLK_PERIOD : time := 100 ns;
+
+begin
+
+    -- Instanciar la Unidad Bajo Prueba (UUT)
+    uut: TOP
+    Port map (
+        CLK => CLK,
+        RESET_n => RESET_n,
+        BOTON => BOTON,
+        aux => aux,
+        s_PRESENCIA => s_PRESENCIA,
+        estado_PUERTA => estado_PUERTA,
+        motor_PUERTA => motor_PUERTA,
+        motor_ASCENSOR => motor_ASCENSOR,
+        led => led
+    );
+
+    -- Proceso de generación del reloj
+    clk_process :process
+    begin
+        while True loop
+            CLK <= '0';
+            wait for CLK_PERIOD/2;
+            CLK <= '1';
+            wait for CLK_PERIOD/2;
+        end loop;
+    end process;
+
+    -- Proceso de estímulo
+    stim_proc: process
+    begin
+        -- Reiniciar el sistema
+        RESET_n <= '0';
+        wait for 20 ns;
+        RESET_n <= '1';
+
+        -- Caso de prueba 1: Presionar BOTON para solicitar el piso 1
+        BOTON <= "0001";
+        wait for 100 ns;
+        
+        -- Caso de prueba 2: Presionar BOTON para solicitar el piso 2
+        BOTON <= "0010";
+        wait for 100 ns;
+
+        -- Caso de prueba 3: Presionar BOTON para solicitar el piso 3 (numero 4)
+        BOTON <= "0100";
+        wait for 100 ns;
+
+        -- Caso de prueba 4: Presionar BOTON para solicitar el piso 4  (numero 8)
+        BOTON <= "1000";
+        wait for 100 ns;
+        
+        -- Fin de la prueba
+        wait;
+    end process;
+
+end Behavioral;
+
+
+COMPROBACION DEL MOTOR DE LAS PUERTAS
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+
+entity TOP_tb_puertas is
+end TOP_tb_puertas;
+
+architecture Behavioral of TOP_tb_puertas is
+
+    -- Declaración del componente para la Unidad Bajo Prueba (UUT)
+    component TOP
+    Port ( CLK : in STD_LOGIC;
+           RESET_n : in STD_LOGIC;
+           BOTON : in STD_LOGIC_VECTOR (3 downto 0);
+           aux : inout STD_LOGIC;
+           s_PRESENCIA : in STD_LOGIC;
+           estado_PUERTA : in STD_LOGIC_VECTOR (1 downto 0);
+           motor_PUERTA : out STD_LOGIC_VECTOR (1 downto 0);
+           motor_ASCENSOR : inout STD_LOGIC_VECTOR (1 downto 0);
+           led : out STD_LOGIC_VECTOR (6 downto 0));
+    end component;
+
+    -- Señales del testbench
+    signal CLK : STD_LOGIC := '0';
+    signal RESET_n : STD_LOGIC := '0';
+    signal BOTON : STD_LOGIC_VECTOR (3 downto 0) := (others => '0');
+    signal aux : STD_LOGIC := '0';
+    signal s_PRESENCIA : STD_LOGIC := '0';
+    signal estado_PUERTA : STD_LOGIC_VECTOR (1 downto 0) := (others => '0');
+    signal motor_PUERTA : STD_LOGIC_VECTOR (1 downto 0);
+    signal motor_ASCENSOR : STD_LOGIC_VECTOR (1 downto 0) := (others => '0');
+    signal led : STD_LOGIC_VECTOR (6 downto 0);
+    signal piso_estado : STD_LOGIC_VECTOR (2 downto 0) := "000";
+    signal piso_deseado : STD_LOGIC_VECTOR (2 downto 0) := "000";
+
+    -- Generación del reloj
+    constant CLK_PERIOD : time := 10 ns;
+
+begin
+
+    -- Instanciar la Unidad Bajo Prueba (UUT)
+    uut: TOP
+    Port map (
+        CLK => CLK,
+        RESET_n => RESET_n,
+        BOTON => BOTON,
+        aux => aux,
+        s_PRESENCIA => s_PRESENCIA,
+        estado_PUERTA => estado_PUERTA,
+        motor_PUERTA => motor_PUERTA,
+        motor_ASCENSOR => motor_ASCENSOR,
+        led => led
+    );
+
+    -- Proceso de generación del reloj
+    clk_process :process
+    begin
+        while True loop
+            CLK <= '0';
+            wait for CLK_PERIOD/2;
+            CLK <= '1';
+            wait for CLK_PERIOD/2;
+        end loop;
+    end process;
+
+    -- Proceso de estímulo
+    stim_proc: process
+    begin
+        -- Reiniciar el sistema
+        RESET_n <= '0';
+        wait for 20 ns;
+        RESET_n <= '1';
+
+
+        -- Caso de prueba 1: Simular la apertura de las puertas en el piso deseado
+        piso_estado <= "001"; -- Ascensor en el piso 1
+        piso_deseado <= "001"; -- Desea ir al piso 1
+        estado_PUERTA <= "01"; -- Puerta cerrada
+        wait for 100 ns;
+        s_PRESENCIA <= '0'; -- Nadie está presente
+        wait for 100 ns;
+
+       
+        -- Esperar a que las puertas se abran completamente
+        wait until motor_PUERTA = "00" and estado_PUERTA = "10"; -- Puerta abierta
+
+        -- Caso de prueba 2: Simular la presencia de alguien para mantener las puertas abiertas
+        s_PRESENCIA <= '1';
+        wait for 200 ns;
+
+        -- Caso de prueba 3: Simular que ya no hay presencia para cerrar las puertas
+        s_PRESENCIA <= '0';
+        wait for 100 ns;
+
+        -- Esperar a que las puertas se cierren completamente
+        wait until motor_PUERTA = "00" and estado_PUERTA = "01"; -- Puerta cerrada
+
+        -- Caso de prueba 4: Simular la apertura de puertas en un piso diferente
+        piso_estado <= "001"; -- Ascensor en el piso 1
+        piso_deseado <= "010"; -- Desea ir al piso 2
+        estado_PUERTA <= "01"; -- Puerta cerrada
+        wait for 100 ns;
+        s_PRESENCIA <= '0'; -- Nadie está presente
+        wait for 100 ns;
+
+        -- Simular llegada al piso deseado
+        piso_estado <= "010"; -- Ascensor en el piso 2
+        wait for 100 ns;
+
+        -- Esperar a que las puertas se abran completamente
+        wait until motor_PUERTA = "00" and estado_PUERTA = "10"; -- Puerta abierta
+        
+        -- Fin de la prueba
+        wait;
+    end process;
+
+end Behavioral;
+
+
+CONTROL MOTOR DEL ASCENSOR
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+
+entity TOP_tb_motor is
+end TOP_tb_motor;
+
+architecture Behavioral of TOP_tb_motor is
+
+    -- Declaración del componente para la Unidad Bajo Prueba (UUT)
+    component TOP
+    Port ( CLK : in STD_LOGIC;
+           RESET_n : in STD_LOGIC;
+           BOTON : in STD_LOGIC_VECTOR (3 downto 0);
+           aux : inout STD_LOGIC;
+           s_PRESENCIA : in STD_LOGIC;
+           estado_PUERTA : in STD_LOGIC_VECTOR (1 downto 0);
+           motor_PUERTA : out STD_LOGIC_VECTOR (1 downto 0);
+           motor_ASCENSOR : inout STD_LOGIC_VECTOR (1 downto 0);
+           led : out STD_LOGIC_VECTOR (6 downto 0));
+    end component;
+
+    -- Señales del testbench
+    signal CLK : STD_LOGIC := '0';
+    signal RESET_n : STD_LOGIC := '0';
+    signal BOTON : STD_LOGIC_VECTOR (3 downto 0) := (others => '0');
+    signal aux : STD_LOGIC := '0';
+    signal s_PRESENCIA : STD_LOGIC := '0';
+    signal estado_PUERTA : STD_LOGIC_VECTOR (1 downto 0) := (others => '0');
+    signal motor_PUERTA : STD_LOGIC_VECTOR (1 downto 0);
+    signal motor_ASCENSOR : STD_LOGIC_VECTOR (1 downto 0) := (others => '0');
+    signal led : STD_LOGIC_VECTOR (6 downto 0);
+    signal piso_estado : STD_LOGIC_VECTOR (2 downto 0) := "000";
+    signal piso_deseado : STD_LOGIC_VECTOR (2 downto 0) := "000";
+
+    -- Generación del reloj
+    constant CLK_PERIOD : time := 10 ns;
+
+begin
+
+    -- Instanciar la Unidad Bajo Prueba (UUT)
+    uut: TOP
+    Port map (
+        CLK => CLK,
+        RESET_n => RESET_n,
+        BOTON => BOTON,
+        aux => aux,
+        s_PRESENCIA => s_PRESENCIA,
+        estado_PUERTA => estado_PUERTA,
+        motor_PUERTA => motor_PUERTA,
+        motor_ASCENSOR => motor_ASCENSOR,
+        led => led
+    );
+
+    -- Proceso de generación del reloj
+    clk_process :process
+    begin
+        while True loop
+            CLK <= '0';
+            wait for CLK_PERIOD/2;
+            CLK <= '1';
+            wait for CLK_PERIOD/2;
+        end loop;
+    end process;
+
+    -- Proceso de estímulo
+    stim_proc: process
+    begin
+        -- Reiniciar el sistema
+        RESET_n <= '0';
+        wait for 20 ns;
+        RESET_n <= '1';
+
+        -- Caso de prueba 1: El ascensor está en el piso 0 y se desea ir al piso 1
+        piso_estado <= "001"; -- Ascensor en el piso 0
+        piso_deseado <= "010"; -- Desea ir al piso 1
+        wait for 100 ns;
+
+       
+        -- Simular llegada al piso deseado
+        piso_estado <= "010"; -- Ascensor en el piso 1
+        wait for 100 ns;
+
+
+        -- Caso de prueba 2: El ascensor está en el piso 1 y se desea ir al piso 0
+        piso_estado <= "010"; -- Ascensor en el piso 1
+        piso_deseado <= "001"; -- Desea ir al piso 0
+        wait for 100 ns;
+
+        
+        -- Simular llegada al piso deseado
+        piso_estado <= "001"; -- Ascensor en el piso 0
+        wait for 100 ns;
+
+
+        -- Caso de prueba 3: El ascensor está en el piso 2 y se desea ir al piso 3
+        piso_estado <= "011"; -- Ascensor en el piso 2
+        piso_deseado <= "100"; -- Desea ir al piso 3
+        wait for 100 ns;
+
+        
+        -- Simular llegada al piso deseado
+        piso_estado <= "100"; -- Ascensor en el piso 3
+        wait for 100 ns;
+
+
+        -- Caso de prueba 4: El ascensor está en el piso 3 y se desea ir al piso 2
+        piso_estado <= "100"; -- Ascensor en el piso 3
+        piso_deseado <= "011"; -- Desea ir al piso 2
+        wait for 100 ns;
+
+        
+        -- Simular llegada al piso deseado
+        piso_estado <= "011"; -- Ascensor en el piso 2
+        wait for 100 ns;
+
+
+        -- Fin de la prueba
+        wait;
+    end process;
+
+end Behavioral;
