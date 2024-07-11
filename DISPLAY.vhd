@@ -1,3 +1,24 @@
+----------------------------------------------------------------------------------
+-- Company: 
+-- Engineer: 
+-- 
+-- Create Date: 29.06.2024 11:25:18
+-- Design Name: 
+-- Module Name: display - Behavioral
+-- Project Name: 
+-- Target Devices: 
+-- Tool Versions: 
+-- Description: 
+-- 
+-- Dependencies: 
+-- 
+-- Revision:
+-- Revision 0.01 - File Created
+-- Additional Comments:
+-- 
+----------------------------------------------------------------------------------
+
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use ieee.std_logic_arith.ALL;
@@ -13,10 +34,10 @@ use ieee.std_logic_unsigned.ALL;
 --use UNISIM.VComponents.all;
 
 entity display is
-    Port ( reset_n : in STD_LOGIC;
-           clk_display : in STD_LOGIC;
-           piso_estado : in STD_LOGIC_VECTOR (2 downto 0);
-           led : out STD_LOGIC_VECTOR (6 downto 0));
+    Port ( reset_n : in STD_LOGIC; --reset negado
+           clk_display : in STD_LOGIC; --CLK del display (coincide con el del tratamiento de pisos)
+           piso_estado : in STD_LOGIC_VECTOR (2 downto 0); -- piso en el que está (el que tiene que verse refrejado en el display)
+           led : out STD_LOGIC_VECTOR (6 downto 0)); --leds del display
 end display;
 
 
@@ -31,21 +52,21 @@ begin
     begin
 
      if reset_n = '0' then
-        valor <= "0000000";
+        valor <= "0000000"; --todos encendidos
     
      elsif rising_edge (clk_display) then
         case (piso_estado) is 
     
         when "001" =>
-            valor <= "1001111";
+            valor <= "0000001"; -- 0
         when "010" =>
-            valor <= "0010010";
+            valor <= "1001111"; -- 1
         when "011" =>
-            valor <= "0000110";
+            valor <= "0010010"; -- 2
         when "100" =>
-            valor <= "1001100";
+            valor <= "0000110"; -- 3
         when others =>
-            valor <= "1111110";
+            valor <= "1001100";
         end case;
       
         end if;
