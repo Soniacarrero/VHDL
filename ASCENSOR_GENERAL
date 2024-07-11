@@ -1,3 +1,24 @@
+---------------------------------------------------------------------------------
+-- Company: 
+-- Engineer: 
+-- 
+-- Create Date: 29.06.2024 12:57:17
+-- Design Name: 
+-- Module Name: ASCENSOR_GENERAL - Behavioral
+-- Project Name: 
+-- Target Devices: 
+-- Tool Versions: 
+-- Description: 
+-- 
+-- Dependencies: 
+-- 
+-- Revision:
+-- Revision 0.01 - File Created
+-- Additional Comments:
+-- 
+----------------------------------------------------------------------------------
+
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use ieee.std_logic_arith.ALL;
@@ -13,21 +34,23 @@ use ieee.std_logic_unsigned.ALL;
 --use UNISIM.VComponents.all;
 
 entity ASCENSOR_GENERAL is
-    Port ( clk : in STD_LOGIC;
-           reset_n : in STD_LOGIC;
-           piso_estado : in STD_LOGIC_VECTOR (2 downto 0);
-           piso_deseado : in STD_LOGIC_VECTOR (2 downto 0);
-           s_presencia : in STD_LOGIC;
-           s_puerta : in STD_LOGIC_VECTOR (1 downto 0);
-           aux : out STD_LOGIC;
-           motor_puertas : out STD_LOGIC_VECTOR (1 downto 0);
-           motor_ascensor : out STD_LOGIC_VECTOR (1 downto 0));
+    Port ( clk : in STD_LOGIC; -- señal de reloj del control general del ascensor
+           reset_n : in STD_LOGIC; --reset negado
+           piso_estado : in STD_LOGIC_VECTOR (2 downto 0); -- estado actual del piso
+           piso_deseado : in STD_LOGIC_VECTOR (2 downto 0); -- estado deseado del piso
+           s_presencia : in STD_LOGIC; -- 1=presencia 0=no presencia
+           s_puerta : in STD_LOGIC_VECTOR (1 downto 0); -- 10=abierta  01=cerrada
+           aux : out STD_LOGIC; --1=botonera habilitada  0=botonera no habilitada
+           motor_puertas : out STD_LOGIC_VECTOR (1 downto 0); --10= abrir 01=cerrar
+           motor_ascensor : out STD_LOGIC_VECTOR (1 downto 0)); --10=subir  01=bajar
 end ASCENSOR_GENERAL;
 
 architecture Behavioral of ASCENSOR_GENERAL is
 
-type estado_puerta is (ABRIR, CERRAR, ABIERTO, CERRADO, PARADO); --parado = puertas cerradas 
-signal ACTUAL_PUERTAS, SIGUIENTE_PUERTAS: estado_puerta;
+-- señales TYPE para ir actualizando el estado en el que se encuentra el ascensor (tanto el motor general, como el motor de las puertas)
+
+type estado_puerta is (ABRIR, CERRAR, ABIERTO, CERRADO, PARADO); --parado = puertas cerradas esperando a elegir piso
+signal ACTUAL_PUERTAS, SIGUIENTE_PUERTAS: estado_puerta; 
 
 type estado_motor is (STANDBY, SUBIR, BAJAR);
 signal ACTUAL_MOTOR, SIGUIENTE_MOTOR: estado_motor;
@@ -39,9 +62,9 @@ begin
         begin
         
         if(reset_n='0') then
-        ACTUAL_PUERTAS <= CERRADO;
+        ACTUAL_PUERTAS <= CERRADO; 
         elsif (rising_edge(clk)) then
-        ACTUAL_PUERTAS <= SIGUIENTE_PUERTAS;
+        ACTUAL_PUERTAS <= SIGUIENTE_PUERTAS; --actualiza el estado del motor de las puertas
         end if;
     end process actualiz_puertas;
     
@@ -51,36 +74,36 @@ begin
         if(reset_n='0') then
         ACTUAL_MOTOR <= STANDBY;
         elsif (rising_edge(clk)) then
-        ACTUAL_MOTOR <= SIGUIENTE_MOTOR;
+        ACTUAL_MOTOR <= SIGUIENTE_MOTOR; --actualiza el estado del motor general del ascensor
         end if;
     end process actualiz_motor;
     
-    control_puertas: process(ACTUAL_PUERTAS, s_puerta, s_presencia, piso_estado, piso_deseado)
+    control_puertas: process(ACTUAL_PUERTAS, s_puerta, s_presencia, piso_estado, piso_deseado) -- logística del funcionamiento de las puertas
         begin
-            case (ACTUAL_PUERTAS) is
+            case (ACTUAL_PUERTAS) is --en función del estado en el que se encuentran las puertas
             
                 when CERRADO=>
-                aux <= '0';
-                motor_puertas <= "00";
-                    if(s_puerta="01" and piso_estado=piso_deseado) then
+                aux <= '0'; --botonera deshabilitada
+                motor_puertas <= "00"; --motores apagados
+                    if(s_puerta="01" and piso_estado=piso_deseado) then -- si las puertas están cerradas y el estado del piso es el deseado, se abren
                         SIGUIENTE_PUERTAS <= ABRIR;
                     else
                         SIGUIENTE_PUERTAS <= CERRADO;
                     end if;
                     
                when ABRIR=>
-                aux <= '0';
-                motor_puertas <= "10";
-                    if(s_puerta="10") then
+                aux <= '0'; --botonera deshabilitada
+                motor_puertas <= "10"; --puertas abriendose
+                    if(s_puerta="10") then -- si las puertas han llegado a abrirse del todo, pasa al estado de abierto
                         SIGUIENTE_PUERTAS <= ABIERTO;
                     else
                         SIGUIENTE_PUERTAS <= ABRIR;
                     end if;
                
                when ABIERTO=>
-                aux <= '0';
-                motor_puertas <= "00";
-                    if(s_presencia = '0') then
+                aux <= '0'; -- botonera deshabilitada
+                motor_puertas <= "00"; --motores apagados
+                    if(s_presencia = '0') then -- si no hay nadie entrando / saliendo, se cierran las puertas
                     -- meter un wait para que se espere un poco antes de cerrar
                         SIGUIENTE_PUERTAS <= CERRAR;
                     else
@@ -88,20 +111,20 @@ begin
                     end if;
                
                when CERRAR=>
-                aux <= '0';
-                motor_puertas <= "01";
-                    if(s_presencia = '1' and s_puerta /= "01") then
+                aux <= '0'; --botonera deshabilitada
+                motor_puertas <= "01"; --puertas cerrándose
+                    if(s_presencia = '1' and s_puerta /= "01") then -- si las puertas no han llegado a cerrarse y se detecta a alguien, vuelven a abrirse
                         SIGUIENTE_PUERTAS <= ABRIR;
-                    elsif (s_puerta = "01") then
+                    elsif (s_puerta = "01") then -- si las puertas llegan a cerrarse, pasan al estado en el que se espera a que se seleccione el piso
                         SIGUIENTE_PUERTAS <= PARADO;
                     else 
                         SIGUIENTE_PUERTAS <= CERRAR;
                     end if;
                
                when PARADO=>
-                aux <= '1';   --habilita el boton
-                motor_puertas <= "00";
-                    if(piso_estado /= piso_deseado) then
+                aux <= '1';   --botonera habilitada
+                motor_puertas <= "00"; --motor apagado
+                    if(piso_estado /= piso_deseado) then --si se selecciona un piso diferente al que está, se deshabilita la botonera y vuelve al estado de cerrado
                         SIGUIENTE_PUERTAS <= CERRADO;
                     else
                         SIGUIENTE_PUERTAS <= PARADO;
@@ -111,32 +134,32 @@ begin
             
     end process control_puertas;
     
-    control_motor_ascensor: process(piso_estado, piso_deseado, ACTUAL_MOTOR)
+    control_motor_ascensor: process(piso_estado, piso_deseado, ACTUAL_MOTOR) --logística del funcionamiento del motor general del ascensor
         begin
             case (ACTUAL_MOTOR) is
                 
                 when STANDBY =>
-                motor_ascensor <= "00";
-                    if (piso_deseado > piso_estado) then
+                motor_ascensor <= "00"; --motores apagados
+                    if (piso_deseado > piso_estado) then -- si el piso deseado está encima del estado, el ascensor sube
                         SIGUIENTE_MOTOR <= SUBIR;
-                    elsif (piso_deseado < piso_estado) then
+                    elsif (piso_deseado < piso_estado) then --si el piso deseado está por debajo del estado, el ascensor baja
                         SIGUIENTE_MOTOR <= BAJAR;
                     else 
                         SIGUIENTE_MOTOR <= STANDBY;
                     end if;
                 
                 when SUBIR =>
-                motor_ascensor <= "10";
-                    if (piso_deseado = piso_estado) then
+                motor_ascensor <= "10"; --ascensor sube
+                    if (piso_deseado = piso_estado) then --si llega al piso deseado, se para
                         SIGUIENTE_MOTOR <= STANDBY;
                     else 
                         SIGUIENTE_MOTOR <= SUBIR;
                     end if;
                     
                when BAJAR =>
-                motor_ascensor <= "01";
+                motor_ascensor <= "01"; --ascensor baja
                     if (piso_deseado = piso_estado) then
-                        SIGUIENTE_MOTOR <= STANDBY;
+                        SIGUIENTE_MOTOR <= STANDBY; --si llega al piso deseado, se para
                     else 
                         SIGUIENTE_MOTOR <= BAJAR;
                     end if;
