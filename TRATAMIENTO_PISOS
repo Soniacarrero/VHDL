@@ -1,3 +1,23 @@
+----------------------------------------------------------------------------------
+-- Company: 
+-- Engineer: 
+-- 
+-- Create Date: 29.06.2024 12:15:32
+-- Design Name: 
+-- Module Name: TRATAMIENTO_PISOS - Behavioral
+-- Project Name: 
+-- Target Devices: 
+-- Tool Versions: 
+-- Description: 
+-- 
+-- Dependencies: 
+-- 
+-- Revision:
+-- Revision 0.01 - File Created
+-- Additional Comments:
+-- 
+----------------------------------------------------------------------------------
+
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
@@ -14,36 +34,37 @@ use ieee.std_logic_unsigned.ALL;
 --use UNISIM.VComponents.all;
 
 entity TRATAMIENTO_PISOS is
-    Port ( reset_n : in STD_LOGIC;
-           boton : in STD_LOGIC_VECTOR (3 downto 0);
-           clk_pisos : in STD_LOGIC;
-           aux : in STD_LOGIC;
-           motor : in STD_LOGIC_VECTOR (1 downto 0);
-           piso_deseado : out STD_LOGIC_VECTOR (2 downto 0);
-           piso_estado : out STD_LOGIC_VECTOR (2 downto 0));
+    Port ( reset_n : in STD_LOGIC; --reset negado
+           boton : in STD_LOGIC_VECTOR (3 downto 0); -- botonera de los pisos
+           clk_pisos : in STD_LOGIC; -- reloj para el tratamiento de los pisos
+           aux : in STD_LOGIC; -- habilitación de la botonera
+           motor : in STD_LOGIC_VECTOR (1 downto 0); -- 10=subir 01=bajar
+           piso_deseado : out STD_LOGIC_VECTOR (2 downto 0); --piso al que se desea ir
+           piso_estado : out STD_LOGIC_VECTOR (2 downto 0)); --piso en el que se encuentra
 end TRATAMIENTO_PISOS;
 
 architecture Behavioral of TRATAMIENTO_PISOS is
-    signal asign: std_logic_vector (2 downto 0);
+    signal asign: std_logic_vector (2 downto 0); -- señal temporal para atribuirla al final de cada process a la variable deseada
 
 begin
-deseado:process(clk_pisos,reset_n,aux)
+
+deseado:process(clk_pisos,reset_n,aux) --se establece el piso deseado en función del boton que se pulsa
 begin
     if(reset_n='0') then
     piso_deseado<="001";
-    elsif(rising_edge(clk_pisos)and motor="00" and aux='1') then
+    elsif(rising_edge(clk_pisos)and motor="00" and aux='1') then  -- cuando el ascensor no esta en movimiento y la botonera está habilitada
     case (boton) is
-        when "0000"=> piso_deseado<=asign;
-        when "0001"=> piso_deseado<="001";
-        when "0010"=> piso_deseado<="010";
-        when "0100"=> piso_deseado<="011";
-        when "1000"=> piso_deseado<="100";
-        when others => piso_deseado<=asign;
+        when "0000"=> piso_deseado<=asign; -- no varía
+        when "0001"=> piso_deseado<="001"; -- botón de planta 0
+        when "0010"=> piso_deseado<="010"; -- botón de planta 1
+        when "0100"=> piso_deseado<="011"; -- botón de planta 2
+        when "1000"=> piso_deseado<="100"; -- botón de planta 3
+        when others => piso_deseado<=asign; -- no varía
         end case;
         end if;
 end process deseado;
 
-deseadopormotor:process(motor, clk_pisos, reset_n)
+deseadopormotor:process(motor, clk_pisos, reset_n) -- se actualiza el estado del piso en funcion de si el ascensor está subiendo o bajando
     begin
         if(reset_n='0') then
         asign<="001";
@@ -51,9 +72,9 @@ deseadopormotor:process(motor, clk_pisos, reset_n)
         elsif (rising_edge(clk_pisos)) then
         
             case (motor) is
-                when "01" => asign <= asign-1;
-                when "10" => asign <= asign+1;
-                when others => asign <= asign;
+                when "01" => asign <= asign-1; --si baja, el piso diminuye
+                when "10" => asign <= asign+1; --su sube, el piso aumenta
+                when others => asign <= asign; -- si no se mueve, se queda igual
             end case;
         end if;
 end process deseadopormotor;
